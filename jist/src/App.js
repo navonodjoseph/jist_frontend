@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import { useState } from 'react';
 import { ReactMic } from 'react-mic'
+import uploadFile from './fetch';
 
 function App(){
   const [isRecording, setIsRecording] = useState(false);
@@ -17,9 +18,16 @@ function App(){
     console.log('chunk of real-time data is: ', recordedBlob);
   };
 
-  const onStop = (recordedBlob) => {
+  const onStop = async (recordedBlob) => {
     console.log('recordedBlob is: ', recordedBlob);
     setAudioUrl(recordedBlob.blobURL);
+  
+    try{
+      await uploadFile(recordedBlob.blob);
+      console.log('File upload complete'); 
+    } catch( error ){
+      console.error('File upload error:', error)
+    }
   };
 
   return(
