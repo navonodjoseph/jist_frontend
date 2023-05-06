@@ -19,7 +19,7 @@ function App(){
 
   const onStop = (recordedBlob) => {
     console.log('recordedBlob is: ', recordedBlob);
-    setAudioUrl(recordedBlob.blobURL)
+    setAudioUrl(recordedBlob.blobURL);
   };
 
   return(
