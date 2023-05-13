@@ -13,7 +13,7 @@ const uploadFile = async (file) => {
     console.log("File upload success:", response.data);
   } catch (error) {
     console.error("File upload error: ", error);
-  }
+}
 };
 
 export default uploadFile

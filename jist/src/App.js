@@ -1,59 +1,22 @@
-import { ChakraProvider } from '@chakra-ui/react'
-import { useState } from 'react';
-import { ReactMic } from 'react-mic'
-import uploadFile from './fetch';
+import React, { useEffect } from "react";
+import axios from "axios";
+import AudioRecorder from "./AudioRecorder";
 
-function App(){
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
-
-  const startRecording = () => {
-    setIsRecording(true);
-  }
-  const stopRecording = () =>{
-    setIsRecording(false);
-  }
-
-  const onData = (recordedBlob) => {
-    console.log('chunk of real-time data is: ', recordedBlob);
-  };
-
-  const onStop = async (recordedBlob) => {
-    console.log('recordedBlob is: ', recordedBlob);
-    setAudioUrl(recordedBlob.blobURL);
-  
-    try{
-      await uploadFile(recordedBlob.blob);
-      console.log('File upload complete'); 
-    } catch( error ){
-      console.error('File upload error:', error)
-    }
-  };
-
-  return(
-    <ChakraProvider>
-      <div className='App'>
-        <h1>Audio Recorder</h1>
-        {audioUrl && (
-          <audio controls>
-            <source src={audioUrl} type='audio/mp3'/>
-          </audio>
-        )}
-        <ReactMic
-          record={isRecording}
-          onStop={onStop}
-          ondata={onData}
-          strokeColor='black'
-          backgroundColor='white'
-        />
-        {isRecording ? (
-          <button onClick={stopRecording}>Stop Recording</button>
-        ) : (
-          <button onClick={startRecording}>Start Recording</button>
-          )}
-      </div>
-    </ChakraProvider>
-  )
+export default function App() {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000");
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error: ", error);
+      }
+    };
+    fetchData();
+  }, []);
+  return (
+    <div>
+      <AudioRecorder />
+    </div>
+  );
 }
-
-export default App;
