@@ -1,5 +1,7 @@
+import React from 'react'; 
 import { useState } from 'react'; 
-import { ReactMic } from 'react-mic'
+import { ReactMic } from 'react-mic';
+import axios from 'axios';
 
 export default function AudioRecorder (){
 
@@ -18,6 +20,20 @@ const [isRecording, setIsRecording] = useState(false);
   };
 
   const onStop = async (recordedBlob) => {
+    try{
+      const formData = new FormData(); 
+      formData.append('audio', recordedBlob.blob, 'audio.wav'); 
+
+      await axios.post('http://localhost:8000', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }) 
+      console.log('New audio uploaded');
+    }catch (error){
+      console.error('Error uploading audio: ', error); 
+    }
+  
     console.log('recordedBlob is: ', recordedBlob);
     setAudioUrl(recordedBlob.blobURL);
 
