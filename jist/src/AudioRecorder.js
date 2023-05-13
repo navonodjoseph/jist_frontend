@@ -20,13 +20,7 @@ const [isRecording, setIsRecording] = useState(false);
   const onStop = async (recordedBlob) => {
     console.log('recordedBlob is: ', recordedBlob);
     setAudioUrl(recordedBlob.blobURL);
-  
-    // try{
-    //   await uploadFile(recordedBlob.blob);
-    //   console.log('File upload complete'); 
-    // } catch( error ){
-    //   console.error('File upload error:', error)
-    // }
+
   };
 
   return(

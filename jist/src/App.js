@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AudioRecorder from "./AudioRecorder";
 
 export default function App() {
+  const [data, setData] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:8000");
-        console.log(response.data);
+        setData(response.data);
       } catch (error) {
         console.error("Error: ", error);
       }
@@ -15,8 +17,19 @@ export default function App() {
     fetchData();
   }, []);
   return (
-    <div>
+    <div className="audio-recorder">
       <AudioRecorder />
+      <div className="textbox">
+        {data ? (
+          <ul>
+            {data.map((item) => (
+              <li key={item.id}>{item.name}</li>
+            ))}
+          </ul>
+        ): (
+          <p>...Loading...</p>
+        )}
+      </div>
     </div>
   );
 }
