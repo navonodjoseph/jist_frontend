@@ -6,45 +6,45 @@ import axios from 'axios';
 export default function AudioRecorder (){
 
 const [isRecording, setIsRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
+  const [blobURL, setBlobURL] = useState(null);
 
   const startRecording = () => {
     setIsRecording(true);
   }
   const stopRecording = () =>{
     setIsRecording(false);
+    sendAudioToBackend(); 
   }
 
   const onData = (recordedBlob) => {
     console.log('chunk of real-time data is: ', recordedBlob);
   };
 
-  const onStop = async (recordedBlob) => {
+  const onStop = (recordedBlob) => {
+    console.log("recordedBlob is: ", recordedBlob);
+    setBlobURL(recordedBlob.blobURL); 
+  }
+ 
+  const sendAudioToBackend = async () =>{
     try{
-      const formData = new FormData(); 
-      formData.append('audio', recordedBlob.blob, 'audio.wav'); 
+      const audioBlob = new Blob([setBlobURL], { type: 'audio/wav'});
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'audio.wav'); 
 
-      await axios.post('http://localhost:8000', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }) 
-      console.log('New audio uploaded');
-    }catch (error){
-      console.error('Error uploading audio: ', error); 
-    }
+      const response = await axios.post('http://localhost:8000/', formData)
+      console.log(response.data); 
+      } catch (error){
+        console.error(error)
+      } 
+ }
+
   
-    console.log('recordedBlob is: ', recordedBlob);
-    setAudioUrl(recordedBlob.blobURL);
-
-  };
-
   return(
       <div className='App'>
         <h1>Audio Recorder</h1>
-        {audioUrl && (
+        {blobURL && (
           <audio controls>
-            <source src={audioUrl} type='audio/mp3'/>
+            <source src={blobURL} type='audio/mp3'/>
           </audio>
         )}
         <ReactMic
