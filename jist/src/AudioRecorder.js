@@ -27,12 +27,14 @@ const [isRecording, setIsRecording] = useState(false);
  
   const sendAudioToBackend = async () =>{
     try{
-      const audioBlob = new Blob([setBlobURL], { type: 'audio/wav'});
+      const audioBlob = new Blob([setBlobURL], { type: 'audio.webm'});
       const formData = new FormData();
-      formData.append('audio', audioBlob, 'audio.wav'); 
-
+      formData.append('audio', audioBlob)
+      formData.append("Content-Type", 'audio/webm')
+    
       const response = await axios.post('http://localhost:8000/', formData)
       console.log(response.data); 
+      console.log(audioBlob)
       } catch (error){
         console.error(error)
       } 
@@ -44,7 +46,7 @@ const [isRecording, setIsRecording] = useState(false);
         <h1>Audio Recorder</h1>
         {blobURL && (
           <audio controls>
-            <source src={blobURL} type='audio/mp3'/>
+            <source src={blobURL} type='audio.webM'/>
           </audio>
         )}
         <ReactMic
@@ -53,6 +55,7 @@ const [isRecording, setIsRecording] = useState(false);
           ondata={onData}
           strokeColor='black'
           backgroundColor='white'
+          mimeType='audio.webM'
         />
         {isRecording ? (
           <button onClick={stopRecording}>Stop Recording</button>
