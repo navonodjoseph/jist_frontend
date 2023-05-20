@@ -1,45 +1,46 @@
-import React, { useRef} from "react";
-import {ReactMediaRecorder} from "react-media-recorder";
+import React from "react";
+import { useReactMediaRecorder } from "react-media-recorder";
 import axios from "axios";
 
 const AudioRecorder = () => {
-  const mediaBlobUrl = useRef(null)
-  
-  const handleRecordingStop = async (blob) => {
-    //send the recorded audio to django api
-    const file = new File([blob], 'audio.wav', {
-      type: 'audio/wav',
-    })
-    const formData = new FormData();
-    formData.append("audio", file);
+  const { status, startRecording, stopRecording, mediaBlobURL } =
+    useReactMediaRecorder({ audio: true });
 
-    try {
-      const response = await axios.post("http://localhost:8000", formData) 
-      if (response.status === 200) {
-        console.log("Audio sent successfully");
-      } else {
-        console.error("Error sending audio");
+  const handleSaveRecording = async () => {
+    //stop recording if in progress
+    if (status === "recording") {
+      stopRecording();
+    }
+    // create a formData object to send the recorded audio file
+    if (mediaBlobURL) {
+      const response = await fetch(mediaBlobURL);
+      const audioBlob = await response.blob();
+
+      const formData = new FormData();
+      formData.append("audio", audioBlob);
+      console.log("Friday at 8", audioBlob, mediaBlobURL);
+
+      try {
+        //send audio to backend
+        console.log("logging data");
+        await axios.post("http://localhost:8000", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log("Recording saved successfully");
+      } catch (error) {
+        console.error("Error saving recording:", error);
       }
-    } catch (error) {
-      console.error("Error sending audio", error);
     }
   };
   return (
-    <ReactMediaRecorder
-      video={false}
-      render={({ startRecording, stopRecording, mediaBlobUrl }) => (
-        //Saving media blob
-       
-         <div>
-          <button onClick={startRecording}>Start Recording</button>
-          <button onClick={stopRecording}>Stop Recording</button>
-          <audio src={mediaBlobUrl} controls />
-        </div>
-        
-    )}
-      onStop={handleRecordingStop}
-    />
+    <div>
+      <button onClick={startRecording}> Start Recording </button>
+      <button onClick={stopRecording}> Stop Recording </button>
+      <button onClick={handleSaveRecording}> Save Recording </button>
+      {status === "recording" && <p>.... recording in progress ...</p>}
+      {mediaBlobURL && <audio src={mediaBlobURL} controls />}
+    </div>
   );
 };
-
-export default AudioRecorder
+export default AudioRecorder;
