@@ -1,9 +1,10 @@
 import React from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import axios from "axios";
+import { Button, Box} from '@chakra-ui/react'
 
 const AudioRecorder = () => {
-  const { status, startRecording, stopRecording, mediaBlobURL } =
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true });
 
   const handleSaveRecording = async () => {
@@ -12,35 +13,31 @@ const AudioRecorder = () => {
       stopRecording();
     }
     // create a formData object to send the recorded audio file
-    if (mediaBlobURL) {
-      const response = await fetch(mediaBlobURL);
-      const audioBlob = await response.blob();
 
-      const formData = new FormData();
-      formData.append("audio", audioBlob);
-      console.log("Friday at 8", audioBlob, mediaBlobURL);
+    const formData = new FormData();
+    formData.append("audio", mediaBlobUrl);
 
-      try {
-        //send audio to backend
-        console.log("logging data");
-        await axios.post("http://localhost:8000", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        console.log("Recording saved successfully");
-      } catch (error) {
-        console.error("Error saving recording:", error);
-      }
+    try {
+      //send audio to backend
+      console.log("logging data");
+      await axios.post("http://localhost:8000", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Recording saved successfully");
+      console.log("audio", mediaBlobUrl);
+    } catch (error) {
+      console.error("Error saving recording:", error);
     }
   };
+
   return (
-    <div>
-      <button onClick={startRecording}> Start Recording </button>
-      <button onClick={stopRecording}> Stop Recording </button>
-      <button onClick={handleSaveRecording}> Save Recording </button>
+    <Box>
+      <Button onClick={startRecording}> Start Recording </Button>
+      <Button onClick={stopRecording}> Stop Recording </Button>
+      <Button onClick={handleSaveRecording}> Save Recording </Button>
       {status === "recording" && <p>.... recording in progress ...</p>}
-      {mediaBlobURL && <audio src={mediaBlobURL} controls />}
-    </div>
+      {mediaBlobUrl && <audio src={mediaBlobUrl} controls />}
+    </Box>
   );
 };
 export default AudioRecorder;

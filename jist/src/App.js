@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import AudioRecorder from "./AudioRecorder";
+import { Heading, Text } from '@chakra-ui/react'
 
 export default function App() {
   // const [data, setData] = useState(null);
@@ -19,6 +20,10 @@ export default function App() {
 
   return (
     <div className="audio-recorder">
+      <Heading>Audio Recorder</Heading>
+      <Text fontsize='x1'>
+        Simple audio recorder and transcriber using WhisperAI 
+      </Text>
       <AudioRecorder />
     </div>
   );
