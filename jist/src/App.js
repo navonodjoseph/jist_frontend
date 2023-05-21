@@ -21,7 +21,7 @@ export default function App() {
   return (
     <div className="audio-recorder">
       <Heading>Audio Recorder</Heading>
-      <Text fontsize='x1'>
+      <Text fontSize='x1'>
         Simple audio recorder and transcriber using WhisperAI 
       </Text>
       <AudioRecorder />

@@ -23,11 +23,15 @@ const AudioRecorder = () => {
     if (status === "recording") {
       stopRecording();
     }
-    // create a formData object to send the recorded audio file
+    
+    if(!audioBlob){
+      console.error("Audio blob is not available yet")
+    }
 
+    //create formData object to send the recorded audio file
     const formData = new FormData();
-    formData.append("audio", audioBlob, 'audio.wav');
-    console.log('audio ln 30', audioBlob)
+    formData.append("audio", audioBlob, 'audio.webm');
+    console.log('audio ln 34', audioBlob)
 
     try {
       //send audio to backend
