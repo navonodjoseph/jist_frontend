@@ -27,10 +27,12 @@ const AudioRecorder = () => {
     if(!audioBlob){
       console.error("Audio blob is not available yet")
     }
+     // can you convert to .wav file here instead of doing on backend? 
 
     //create formData object to send the recorded audio file
     const formData = new FormData();
     formData.append("audio", audioBlob, 'audio.webm');
+    // formData.append("audio", "mediaBlobURL" )
     console.log('audio ln 34', audioBlob)
 
     try {
@@ -44,10 +46,13 @@ const AudioRecorder = () => {
     } catch (error) {
       console.error("Error saving recording:", error);
     }
+    let audio = new Audio (mediaBlobUrl)
+    audio.play()
   };
 
   return (
     <Box>
+      <audio/>
       <Button onClick={startRecording}> Start Recording </Button>
       <Button onClick={stopRecording}> Stop Recording </Button>
       <Button onClick={handleSaveRecording}> Save Recording </Button>
