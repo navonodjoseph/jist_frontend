@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AudioRecorder from "./AudioRecorder";
-import { Heading, Text } from "@chakra-ui/react";
+import AudioRecorder from "./AudioRecorder"
+import { Heading, Text, Box } from "@chakra-ui/react";
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -22,22 +22,22 @@ export default function App() {
 
   return (
     <div className="audio-recorder">
-      <Heading>Audio Recorder</Heading>
-      <Text fontSize="x1">
+      <Heading textAlign={['left', 'center']}>Audio Recorder</Heading>
+      <Text textAlign={['left', 'center']}>
         Simple audio recorder and transcriber using WhisperAI
       </Text>
       <AudioRecorder />
       {data.length > 0 ? (
-        <div>
+        <Box boxsize='lg' border='1px' borderColor='gray.200'>
           <Heading as="h2">Transcript</Heading>
           {data.map((item) => (
             <div key={item.pk}>
               <Text>{item.fields.transcribe}</Text>
             </div>
           ))}
-        </div>
+        </Box>
       ) : (
-        <Text>No transcripts available</Text>
+        <Text textAlign={['left', 'center']}>No transcripts available</Text>
       ) }
     </div>
   );

@@ -12,3 +12,12 @@ code {
     monospace;
 }
 
+.buttons{
+  text-align: center;
+  padding: 15px;
+}
+
+.audio-recorder{
+  text-align: center;
+}
+
