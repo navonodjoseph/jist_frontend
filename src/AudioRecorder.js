@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 import axios from "axios";
 import { Button, Box } from "@chakra-ui/react";
-import AudioWaveform from "./AudioWave"
 
 const AudioRecorder = () => {
   const { status, startRecording, stopRecording, mediaBlobUrl } =
@@ -55,12 +54,7 @@ const AudioRecorder = () => {
 
   return (
     <div className="buttons">
-      <Box display='flex' justifyContent='center' mb={4}>
-        {mediaBlobUrl && (
-          <AudioWaveform mediaBlobUrl={mediaBlobUrl} status={status} />
-        )}
-
-      </Box>
+      <audio />
       {status === "recording" ? (
         <Button onClick={stopRecording}> Stop Recording </Button>
       ) : (
@@ -69,7 +63,7 @@ const AudioRecorder = () => {
       <Button onClick={handleSaveRecording}> Transcibe </Button>
       {status === "recording" && <p>.... recording in progress ...</p>}
       {mediaBlobUrl && (
-        <Box display="flex" justifyContent='center' mt={4}>
+        <Box display="flex" justifyContent="center" mt={4}>
           <audio src={mediaBlobUrl} controls />
         </Box>
       )}
