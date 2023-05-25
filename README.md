@@ -56,10 +56,12 @@ Using a POST request, I built a `views.py` file that converts audio, generates a
 ## About the audio recorder
 There are a lot of audio-media React hooks that record audio files, not all of them are great. I wish I would have spent more time researching this. A couple of the ones I tried returned corrupted files. 
 
-## Where to go from here 
--[ ] CRUD functionality for transcripts
--[ ] Video transcription 
--[ ] Authentication 
--[ ] Mobile app
--[ ] Improved design
--[ ] Search feature
+## Where to go from here
+- [X] Automated voice transcription 
+- [X] Database storage
+- [ ] CRUD functionality for transcripts
+- [ ] Video transcription 
+- [ ] Authentication 
+- [ ] Mobile app
+- [ ] Improved design
+- [ ] Search feature
