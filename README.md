@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+# Audio to text transcriber 
+Jist is an audio transcriber using Whisper Ai. It's designed as a voice memo app that converts audio to text. It also logs the text in an API built with Django and Postgres. I built this as part of my coursework at General Assembly with the goal of gaining experience building APIs, working with Django, and experimenting with Ai.  
+![Home page](/Screenshot%202023-05-24%20at%2011.57.02%20PM.png)
+### Frameworks 
+- React
+- Django
+- PSQL 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
+## Build status
+Check out the app here: [Jist](https://jist-frontend.vercel.app/). 
 In the project directory, you can run:
 
-### `npm start`
+### Launching from repo:
+### frontend 
+- `npm install`
+- `npm start` 
+### backend 
+- `pip install pipenv`
+- `pipenv install`
+- `pipenv shell`
+- `python manage.py runserver`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## About the project
+I completed this as a student at General Assembly. This is my first project using Ai. I'm most proud of the API element. The audio is recorded on the client side using `React-Media-Recorder` which captures audio and stores it as a audio `Blob` containing a `webM` file. Once on the server side, the `blob` is read and convered to a .wav file using `pyaudio`. 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+def post(self, request):
+        audio_file = request.FILES.get('audio')
+        if audio_file: 
+            audio_data = audio_file.read()
 
-### `npm test`
+            # convert to audio segment using pydub
+            audio_segment = AudioSegment.from_file(io.BytesIO(audio_data))
+            
+            # save to folder
+            output_folder = 'output'
+            if not os.path.exists(output_folder):
+                os.makedirs(output_folder)
+            
+            # generate unique filename
+            timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            output_filename = f'audio_{timestamp}.wav'
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+            # save audio as .wavfile
+            output_file_path = os.path.join(output_folder, output_filename)
+            audio_segment.export(output_file_path, format='wav')
+            print('Saved file to: ', output_file_path)
 
-### `npm run build`
+            model = whisper.load_model("base")
+            result = model.transcribe(output_file_path)
+            transcript_text = result['text']
+            print(result["text"])
+```
+Using a POST request, I built a `views.py` file that converts audio, generates a unique filename, saves and transcribes. I'm most proud of this code. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## About the audio recorder
+There are a lot of audio-media React hooks that record audio files, not all of them are great. I wish I would have spent more time researching this. A couple of the ones I tried returned corrupted files. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Where to go from here 
+-[ ] CRUD functionality for transcripts
+-[ ] Video transcription 
+-[ ] Authentication 
+-[ ] Mobile app
+-[ ] Improved design
+-[ ] Search feature
