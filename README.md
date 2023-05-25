@@ -14,50 +14,32 @@ In the project directory, you can run:
 ### frontend 
 - `npm install`
 - `npm start` 
-### backend 
+### [backend repo](https://github.com/navonodjoseph/backendjist/settings)
 - `pip install pipenv`
 - `pipenv install`
 - `pipenv shell`
 - `python manage.py runserver`
 
 ## About the project
-I completed this as a student at General Assembly. This is my first project using Ai. I'm most proud of the API element. The audio is recorded on the client side using `React-Media-Recorder` which captures audio and stores it as a audio `Blob` containing a `webM` file. Once on the server side, the `blob` is read and convered to a .wav file using `pyaudio`. 
+
+Most of the project was focused on the backend which receives an audio `Blob`, reads the file and converts it from `webM` to `wav`. You can learn more about what audio files on the OpenAi's [documentation page](https://github.com/openai/whisper). 
+
+This version uses Whisper's `base` model which I used mainly because of its speed and filesize. The performance of `base` is far from perfect. If you prefer to use a larger model size, you'll get better results. 
 
 ```
-def post(self, request):
-        audio_file = request.FILES.get('audio')
-        if audio_file: 
-            audio_data = audio_file.read()
-
-            # convert to audio segment using pydub
-            audio_segment = AudioSegment.from_file(io.BytesIO(audio_data))
-            
-            # save to folder
-            output_folder = 'output'
-            if not os.path.exists(output_folder):
-                os.makedirs(output_folder)
-            
-            # generate unique filename
-            timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            output_filename = f'audio_{timestamp}.wav'
-
-            # save audio as .wavfile
-            output_file_path = os.path.join(output_folder, output_filename)
-            audio_segment.export(output_file_path, format='wav')
-            print('Saved file to: ', output_file_path)
-
             model = whisper.load_model("base")
             result = model.transcribe(output_file_path)
             transcript_text = result['text']
             print(result["text"])
 ```
-Using a POST request, I built a `views.py` file that converts audio, generates a unique filename, saves and transcribes. I'm most proud of this code. 
+
 
 ## About the audio recorder
 There are a lot of audio-media React hooks that record audio files, not all of them are great. I wish I would have spent more time researching this. A couple of the ones I tried returned corrupted files. 
 
 ## Where to go from here
-- [X] Automated voice transcription 
+- [X] Build decent audio recorder
+- [X] Automate voice transcription 
 - [X] Database storage
 - [ ] CRUD functionality for transcripts
 - [ ] Video transcription 
